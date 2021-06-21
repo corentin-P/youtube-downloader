@@ -23,4 +23,4 @@ youtube downloader mp3/mp4, video and playlist
 * Python with libraries (modules)
 * youtube_downloader.py
 
-- Then you must exectute "youtube_downloader.py" with python
+- Then you just exectute "youtube_downloader.py" with python
