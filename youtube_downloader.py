@@ -6,13 +6,30 @@ import pytube
 from moviepy.editor import *
 import os
 
-def Convertisseur(video_default_name, video_name):
+
+
+def Converter(video_default_name, video_name):
+        """
+        transform a video mp4 in a audio file mp3
+        Use os and
+        :param video_default_filename:
+        :param video-title:
+        :return:
+        """
         video = VideoFileClip(os.path.join(folder_case.get()+'/', "", video_default_name))
         video.audio.write_audiofile(os.path.join(folder_case.get()+'/', "", video_name+".mp3"))
         video.close()
         os.remove(folder_case.get()+ '/'+video_default_name)
 
-def playlist_downloader(link, folder, extension):
+def PlaylistDownloader(link, folder, extension):
+        """
+        Download all videos from a public youtube playlist
+        Use selenium, pytube and Converter (the first function of this file)
+        :param link:
+        :param folder:
+        :param extension:
+        :return:
+        """
         driver = webdriver.Chrome(executable_path="chromedriver.exe")
         driver.set_window_size(1024,800)
         driver.get(link)
@@ -30,30 +47,49 @@ def playlist_downloader(link, folder, extension):
                 video = lien_vid.streams.get_highest_resolution()
                 video.download(folder)
                 if extension == 0:
-                        Convertisseur(video.default_filename, video.title)
+                        Converter(video.default_filename, video.title)
         driver.quit()
         showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
 
-def video_downloader(link, folder, extension):
-            lien_vid = pytube.YouTube(link)
-            video = lien_vid.streams.get_highest_resolution()
-            video.download(folder)
-            if extension == 0:
-                    Convertisseur(video.default_filename, video.title)
-            showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
+def VideoDownloader(link, folder, extension):
+        """
+        Download video/audio from a youtube video
+        :param link:
+        :param folder:
+        :param extension:
+        :return:
+        """
+        lien_vid = pytube.YouTube(link)
+        video = lien_vid.streams.get_highest_resolution()
+        video.download(folder)
+        if extension == 0:
+                Converter(video.default_filename, video.title)
+        showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
 
-def valid():
+def Valid():
+        """
+        Function for the valid button, lauch the right function
+        :return:
+        """
         v_or_p = choix.get()
         if v_or_p==0:
-                video_downloader(url_case.get(), folder_case.get(), format.get())
+                VideoDownloader(url_case.get(), folder_case.get(), format.get())
         elif v_or_p ==1 :
-                playlist_downloader(url_case.get(), folder_case.get(), format.get())
+                PlaylistDownloader(url_case.get(), folder_case.get(), format.get())
 
-def Recherche():
-    download_Directory = filedialog.askdirectory(initialdir="Votre dossier de sauvegarde")
-    folder_entry.set(download_Directory)
+def Search():
+        """
+        Function for the search button to have the right file directory
+        :return:
+        """
+        download_Directory = filedialog.askdirectory(initialdir="Votre dossier de sauvegarde")
+        folder_entry.set(download_Directory)
 
-def playlist_prevention():
+def PlaylistPrevention():
+        """
+        Print a label on the screen when we click on "playlist"
+        :return:
+        """
         if choix.get() == 1:
                 label_plt['text'] = "Attention, votre playlist doit être publique !\nEn clickant sur ' Valider ', vous allez ouvrir le navigateur Chrome!\nQuand Chrome se refermera, le téléchargement des vidéos sera fini!"
                 label_plt['bg'] = "#02afff"
@@ -80,17 +116,17 @@ label_dossier = Label(mainapp, text="dossier de téléchargement: ")
 folder_case = Entry(mainapp, width=50, textvariable=folder_entry)
 folder_case.insert(END, 'd:/telechargements/e')
 
-folder_button = Button(mainapp, text="Recherche", command=Recherche)
+folder_button = Button(mainapp, text="Recherche", command=Search)
 
 # Choix video ou playlist
-choix_widget = Radiobutton(mainapp, text="video", value=0, variable=choix, command = playlist_prevention)
-choix_widget2 = Radiobutton(mainapp, text="playlist", value=1, variable=choix, command = playlist_prevention)
+choix_widget = Radiobutton(mainapp, text="video", value=0, variable=choix, command = PlaylistPrevention)
+choix_widget2 = Radiobutton(mainapp, text="playlist", value=1, variable=choix, command = PlaylistPrevention)
 
 mp3_widget = Radiobutton(mainapp, text="mp3", value=0, variable=format)
 mp4_widget = Radiobutton(mainapp, text="mp4", value=1, variable=format)
 
-mainapp.bind_class('Entry', '<Return>', valid)
-btn_valid = Button(mainapp, text="valider", command=valid)
+mainapp.bind_class('Entry', '<Return>', Valid)
+btn_valid = Button(mainapp, text="valider", command=Valid)
 
 
 # Arrangement des objects Tkinter (Grille)
