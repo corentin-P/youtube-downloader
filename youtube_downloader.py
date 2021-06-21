@@ -97,16 +97,17 @@ def PlaylistPrevention():
                 label_plt['text'] = ""
                 label_plt['bg'] = "#FFFFFF"
 
-mainapp = Tk()
-mainapp.title("Télécharger des vidéos youtube")  # Titre du programme
-mainapp.geometry("600x200")  # Déclaration de la taille de la fenêtre
+mainapp = Tk() # create the window
+mainapp.title("Télécharger des vidéos youtube")  # title of the programm
+mainapp.geometry("600x200")  # size of the window
 
+# Initialisation of the variables
 folder_entry = StringVar()
-choix = IntVar()  # Initialisation de la variable "choix"
+choix = IntVar()
 format = IntVar()
 
+# creation of the labels and Entry
 label_bvn = Label(mainapp, text="Bienvenue sur l'outil qui télécharge des vidéos et des playlists YouTube!\n")  # Texte de bienvenue
-
 label_plt = Label(mainapp, text="")
 
 label_url = Label(mainapp, text="adresse url: ")
@@ -114,22 +115,25 @@ url_case = Entry(mainapp, width=50)
 
 label_dossier = Label(mainapp, text="dossier de téléchargement: ")
 folder_case = Entry(mainapp, width=50, textvariable=folder_entry)
-folder_case.insert(END, 'd:/telechargements/e')
 
+# remove the "#" of the next line and replace "PATH" by you're path to create a default path for the downloads
+#folder_case.insert(END, 'PATH')
+
+# Create the buttons
 folder_button = Button(mainapp, text="Recherche", command=Search)
 
-# Choix video ou playlist
 choix_widget = Radiobutton(mainapp, text="video", value=0, variable=choix, command = PlaylistPrevention)
 choix_widget2 = Radiobutton(mainapp, text="playlist", value=1, variable=choix, command = PlaylistPrevention)
 
 mp3_widget = Radiobutton(mainapp, text="mp3", value=0, variable=format)
 mp4_widget = Radiobutton(mainapp, text="mp4", value=1, variable=format)
 
-mainapp.bind_class('Entry', '<Return>', Valid)
 btn_valid = Button(mainapp, text="valider", command=Valid)
 
+# add the shortcut, when we press Enter it's the same as click on the valid button
+mainapp.bind_class('Entry', '<Return>', Valid)
 
-# Arrangement des objects Tkinter (Grille)
+# Put all on the window on the right place
 label_bvn.grid(row=0, column=2)
 label_url.grid(row=1, column=1)
 url_case.grid(row=1, column=2)
