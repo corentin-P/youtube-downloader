@@ -1,4 +1,3 @@
-from selenium import webdriver
 from tkinter import *
 from tkinter import filedialog
 from tkinter.messagebox import *
@@ -8,7 +7,7 @@ import os
 
 
 
-def Converter(video_default_name, video_name):
+def Converter(video_default_name):
         """
         transform a video mp4 in a audio file mp3
         Use os and
@@ -16,39 +15,32 @@ def Converter(video_default_name, video_name):
         :param video-title:
         :return:
         """
+        name_mp3 = video_default_name.replace('.mp4','.mp3')
+
+        print("Convert: ", video_default_name)
+        print("Name of the file: ", name_mp3)
         video = VideoFileClip(os.path.join(folder_case.get()+'/', "", video_default_name))
-        video.audio.write_audiofile(os.path.join(folder_case.get()+'/', "", video_name+".mp3"))
+        video.audio.write_audiofile(os.path.join(folder_case.get()+'/', "", name_mp3))
         video.close()
         os.remove(folder_case.get()+ '/'+video_default_name)
 
 def PlaylistDownloader(link, folder, extension):
         """
         Download all videos from a public youtube playlist
-        Use selenium, pytube and Converter (the first function of this file)
+        Use pytube and Converter (the first function of this file)
         :param link:
         :param folder:
         :param extension:
         :return:
         """
-        driver = webdriver.Chrome(executable_path="chromedriver.exe")
-        driver.set_window_size(1024,800)
-        driver.get(link)
-        driver.find_element_by_xpath("//div[@class='lssxud']/div[@class='VfPpkd-dgl2Hf-ppHlrf-sM5MNb']/button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc IIdkle']").click()
 
-        videos=driver.find_elements_by_xpath(
-                "//div[@id='contents']/ytd-playlist-video-renderer[@class='style-scope ytd-playlist-vdja deo-list-renderer']")
-
-        url = driver.find_elements_by_id("video-title")
-        urls = []
-        for i in range(len(url)):
-                urls.append(url[i].get_attribute("href"))
-                link = urls[i]
-                lien_vid = pytube.YouTube(link)
-                video = lien_vid.streams.get_highest_resolution()
-                video.download(folder)
+        playlist = pytube.Playlist(link)
+        for video in playlist.videos:
+                print("Downloading: ", video.title)
+                vid_d = video.streams.get_highest_resolution()
+                vid_d.download(folder)
                 if extension == 0:
-                        Converter(video.default_filename, video.title)
-        driver.quit()
+                        Converter(vid_d.default_filename)
         showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
 
 def VideoDownloader(link, folder, extension):
@@ -61,9 +53,10 @@ def VideoDownloader(link, folder, extension):
         """
         lien_vid = pytube.YouTube(link)
         video = lien_vid.streams.get_highest_resolution()
+        print("Downloading: ", video.title)
         video.download(folder)
         if extension == 0:
-                Converter(video.default_filename, video.title)
+                Converter(video.default_filename)
         showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
 
 def Valid():
@@ -91,7 +84,7 @@ def PlaylistPrevention():
         :return:
         """
         if choix.get() == 1:
-                label_plt['text'] = "Attention, votre playlist doit être publique !\nEn clickant sur ' Valider ', vous allez ouvrir le navigateur Chrome!\nQuand Chrome se refermera, le téléchargement des vidéos sera fini!"
+                label_plt['text'] = "Attention, votre playlist doit être publique !"
                 label_plt['bg'] = "#02afff"
         else:
                 label_plt['text'] = ""
