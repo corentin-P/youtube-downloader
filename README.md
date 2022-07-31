@@ -9,10 +9,10 @@ youtube downloader mp3/mp4, video and playlist
 - [x] Moviepy
 - [x] Os
 
-## Site Web : 
+## Website : 
 [Pico programms](https://www.pico.great-site.net/)
 
-## What you need to use the programm? 
+## What do you need to use the programm? 
 * Python with libraries (modules)
 * youtube_downloader.py
 
