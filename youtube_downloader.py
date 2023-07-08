@@ -34,14 +34,34 @@ def PlaylistDownloader(link, folder, extension):
         :return:
         """
 
+        errors = 0
+        age_restriction = 0
+        passed = 0
+        age_restriction_videos = []
+        error_videos = []
         playlist = pytube.Playlist(link)
         for video in playlist.videos:
-                print("Downloading: ", video.title)
-                vid_d = video.streams.get_highest_resolution()
-                vid_d.download(folder)
-                if extension == 0:
-                        Converter(vid_d.default_filename)
-        showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
+                try:
+                        print("Downloading: ", video.title)
+                        vid_d = video.streams.get_highest_resolution()
+                        vid_d.download(folder)
+                        if extension == 0:
+                                Converter(vid_d.default_filename)
+                        passed += 1
+                except pytube.exceptions.AgeRestrictedError:
+                        age_restriction += 1
+                        age_restriction_videos.append(video.title)
+                except:
+                        errors += 1
+                        error_videos.append(video.title)
+        if age_restriction > 0:
+                age_restriction_videos = str(age_restriction_videos)
+                showerror("Problème lors du téléchargement", str(age_restriction)+" vidéo(s) sont soumises à une limite d'âge - téléchargement impossible \n Les vidéos posant problème sont:\n"+str(age_restriction_videos))
+        if errors > 0:
+                error_videos = str(error_videos)
+                showerror("Problème lors du téléchargement", "Un problème est survenu lors du téléchargement des vidéos suivantes :"+error_videos)
+        if errors==0 and age_restriction==0:
+                showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
 
 def VideoDownloader(link, folder, extension):
         """
@@ -51,13 +71,18 @@ def VideoDownloader(link, folder, extension):
         :param extension:
         :return:
         """
-        lien_vid = pytube.YouTube(link)
-        video = lien_vid.streams.get_highest_resolution()
-        print("Downloading: ", video.title)
-        video.download(folder)
-        if extension == 0:
-                Converter(video.default_filename)
-        showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
+        try:
+                lien_vid = pytube.YouTube(link)
+                video = lien_vid.streams.get_highest_resolution()
+                print("Downloading: ", video.title)
+                video.download(folder)
+                if extension == 0:
+                        Converter(video.default_filename)
+                showinfo('Succès du téléchargement', 'Téléchargement réalisé avec succès!')
+        except pytube.exceptions.AgeRestrictedError:
+                showerror("Problème lors du téléchargement", "La vidéo est soumise à une limite d'âge et ne peux pas être téléchargée")
+        except:
+                showerror("Problème lors du téléchargement", "Un problème est survenu lors du téléchargement")
 
 def Valid():
         """
