@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter.messagebox import *
-#import "github.com/pytube/pytube"
 import pytube
 from moviepy.editor import *
 import os
