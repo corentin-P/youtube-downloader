@@ -2,15 +2,13 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter.messagebox import *
 import pytube
-from moviepy.editor import *
+from moviepy import VideoFileClip
 import os
-
 
 
 def Converter(video_default_name):
         """
         transform a video mp4 in a audio file mp3
-        Use os and
         :param video_default_filename:
         :param video-title:
         :return:
@@ -27,7 +25,6 @@ def Converter(video_default_name):
 def PlaylistDownloader(link, folder, extension):
         """
         Download all videos from a public youtube playlist
-        Use pytube and Converter (the first function of this file)
         :param link:
         :param folder:
         :param extension:
@@ -117,7 +114,7 @@ def PlaylistPrevention():
 
 mainapp = Tk() # create the window
 mainapp.title("Télécharger des vidéos youtube")  # title of the programm
-mainapp.geometry("600x200")  # size of the window
+mainapp.geometry("800x200")  # size of the window
 
 # Initialisation of the variables
 folder_entry = StringVar()
